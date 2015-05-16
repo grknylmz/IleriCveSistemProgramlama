@@ -1,0 +1,23 @@
+/////////////////////////////////////  Ýleri C ve Sistem Programlama ///////////////////////////////////////////////////////
+///////////////////////////////////// 16.05.2015 ////////////////////////////////////////////////////////////////////////////////////
+
+bit.do/SysProg-2015
+
+Bazý Ýleri C konularý
+Veri yapýlarý ve algoritma
+Disk Ýþlemleri
+TCP-IP Client Programlama
+Recursive Algoritmalar
+Derleyici Yazým Ýlkeleri
+Ýþletim sistemlerinin aþaðý seviyeli incelenmesi
+Proseslerarasý haberleþme
+Interruption
+SeriPort - Paralel Port USB Haberleþme
+Test Ýþlemleri
+Gui Programlama modulu altyapýsý
+Koruma Mekanizasý
+Bellek Yönetimi
+Thread'ler
+
+
+
