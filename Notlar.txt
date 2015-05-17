@@ -20,4 +20,40 @@ Bellek Yönetimi
 Thread'ler
 
 
+GCC gnuCCompiler
+GCC GnuCompilerCollection 
+Understand ---> Linux Source code duzenlemeyici vs.
+
+
+Programlamadaki Katmanlý Yapýlar
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
