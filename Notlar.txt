@@ -1,31 +1,185 @@
-/////////////////////////////////////  �leri C ve Sistem Programlama ///////////////////////////////////////////////////////
+/////////////////////////////////////  Ýleri C ve Sistem Programlama ///////////////////////////////////////////////////////
 ///////////////////////////////////// 16.05.2015 ////////////////////////////////////////////////////////////////////////////////////
 
 bit.do/SysProg-2015
 
-Baz� �leri C konular�
-Veri yap�lar� ve algoritma
-Disk ��lemleri
+Bazý Ýleri C konularý
+Veri yapýlarý ve algoritma
+Disk Ýþlemleri
 TCP-IP Client Programlama
 Recursive Algoritmalar
-Derleyici Yaz�m �lkeleri
-��letim sistemlerinin a�a�� seviyeli incelenmesi
-Prosesleraras� haberle�me
+Derleyici Yazým Ýlkeleri
+Ýþletim sistemlerinin aþaðý seviyeli incelenmesi
+Proseslerarasý haberleþme
 Interruption
-SeriPort - Paralel Port USB Haberle�me
-Test ��lemleri
-Gui Programlama modulu altyap�s�
-Koruma Mekanizas�
-Bellek Y�netimi
+SeriPort - Paralel Port USB Haberleþme
+Test Ýþlemleri
+Gui Programlama modulu altyapýsý
+Koruma Mekanizasý
+Bellek Yönetimi
 Thread'ler
 
 
 GCC gnuCCompiler
-GCC GnuCompilerCollection 
+GCC GnuCompilerCollection
 Understand ---> Linux Source code duzenlemeyici vs.
 
 
-Programlamadaki Katmanl� Yap�lar
+Programlamadaki Katmanlý Yapýlar
+
+Bazı az bilinen C fonksiyonları
+
+RENAME Fonksiyonu
+#include <stdio.h>
+
+int rename(consy char *old, const char *new)
+Başarı durumunda 0 değerine başarısızlık durumunda -1 değerine döner.
+
+Örneğin;
+int main(void){
+if(rename("test.txt" , "x.txt") == -1 )
+printf("Cannot change name!");
+
+printf("Change successful!");
+
+}
+
+SYSTEM Fonksiyonu
+
+System fonksiyonu kabuk programı interaktif olmayan modda çalıştırarak parametresi ile belirtilen kabuk komutunun kabuk tarafından çalıştırılmasını sağlar.
+Fonksyonun prototipi
+
+
+
+#include <stdlib.h>
+int system(const char *string)
+
+Fonksiyon parametre olarak kabuk komutunu yazı olarak alır.Fonksiyon geri dönüş değeri sistemden sisteme değişebilmektedir.Pekçok sistemde fonksiyon başarı durumunda
+sıfır başarısızlık durumunda -1 değerine geri döner.
+
+
+#include <stdlib.h>
+int main(void){
+    int result;
+
+    result = system("ren x.txt a.txt");
+
+    printf("%d\n",result);
+
+}
+
+Geçici Dosya Kavramı ve Geçici Dosya Oluşturan fonksiyonlar
+
+Diyezli ifadeli yada dolarlı ifadeli dosyalar temporary dosyalardır.
+
+TMPFILE Fonksiyonu
+
+#include <stdio.h>
+FILE *tmpfile(void);
+
+Fonksiyon "w+b" modunda yeni bir dosyayı çakışma riski olmadan yeni bir dosyayı yaratır. Bize dosya bilgi göstericisi ile geri döner.
+Biz dosyayı kullandıktan sonra onu fclose ile kapatırız bu durumda dosya otomatik olarak silinmektedir.
+
+EXIT islemi sırasında bütün dosyalar standart olarak kapatılıyor.
+
+#include <stdio.h>
+int main(void){
+    FILE *f;
+    
+    if((f = tmpfile()) == NULL){
+        fprintf(stderr , "cannot create temporary file ...\n");
+        exit(EXIT_FAILURE);
+        
+        
+    }
+    
+    
+    for(i = 0 ; i<100 ; i++){
+        if(fwrite(&i , sizeof(int) , 1 , f ) != 1){
+            fprintf(stderr , "cannot create temporary file ...\n");
+            exit(EXIT_FAILURE);
+        }
+    }
+    
+    
+    fseek(f,0,SEEK_SET);
+    
+    while(fread(&val , sizeof(int) , 1 , f)){
+            fprintf(stderr , "cannot create temporary file ...\n");
+            exit(EXIT_FAILURE);
+        }
+    }
+
+
+    if(ferror(f))
+    fprintf(stderr,"cannot read file");
+
+
+    fclose(f);
+    
+    return 0;
+
+}
+
+
+
+
+TEMPNAM Fonksiyonu
+
+Dosyaya çakışmayacak isim veriyor.
+
+prototipi
+#include <stdio.h>
+char *tmpnam(char *s);  /// Başarısızlık durumunda null pointer a geri döner.
+
+Parametre olarak bizden geçici dosya isminin yerleştirileceği dizinin adresini ister. Bu durumda fonksiyon kendi içerisindeki static bir diziye dosya ismini yerleştirir ve onun adresiyle
+geri döner.
+
+
+int main(void){
+    
+    FILE *f , *ftemp;
+    char *ftempnam;
+    
+    
+    if(argc != 2){
+        fprintf(stderr , "wrong number of arguments!!");
+        exit(EXIT_FAILURE);
+    }
+    
+    if((f = fopen(argv[1],"r"))  == NULL){
+        fprintf(stderr, "cannot open file");
+    }
+    
+    
+    
+    return 0;
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
