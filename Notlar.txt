@@ -159,6 +159,9 @@ int main(void){
 }
 
 
+Dosyayı kapatmadan rename edemeyiz.
+
+
 
 
 
