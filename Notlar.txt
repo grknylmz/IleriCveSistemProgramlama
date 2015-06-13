@@ -274,26 +274,102 @@ fonksiyonlar çağrılırken kesinlikle hata kontrolü yapılmalıdır. Öreneğ
 fclose ile kapatılmamaısının bir nedeni olmaz zaten böyle birşey olsa bile bizim yapabileceğimiz birşey de yoktur.
 Bu tür fonksiyonlarda hata kontrolü programın DEBUG versiyonunda yapılabilir.
 
+HANDLE SİSTEMLERİ
+
+HANDLE türü void*  macar notasyonu -> hFileFind şeklinde ifadeler kullanılır.
+HANDLE bir tamsayı biçiminde olabilir.
+
+int fd;
+
+fd = open("sdkmakls");
+
+Handle bir veri yapısına erişmekte kullanılan tekil bir anahtar değerdir. Handle bir tamsayı biçiminde olabilir. Bu durumda muhtemelen handle global bir dizide
+bir indeks belirlemektedir. Handle bir adres biçiminde olabilir. Bu durumda doğrudan bir veri yapısını gösterir. Bazen handle void bir adres olarak karşımıza çıkabilir.
+Bu durumda o adresin gösterirdiği yerde bir veri yapısı verdır. Fakat sistemi tasarlayan kişi bunu açıklamak istememiştir. Bazen handle bozulmuş bir biçimde
+bize verilir. Sistem onu düzelterek veri yapsına erişir. Böylece kullanan kişi oraya erişmemiş olur. Handle ile erişilen veri yapısına handle alanı denilmektedir.
+
+
+
+Bir handle sisteminde 3 grup fonksiyon bulunur. 
+	1) Handle sistemlerini yaratan yada açan fonksiyonlar : Bunlar genellikle özellikle windows sistemlerinde CreateXXX yada OpenXXX biçiminde isimlendirilir.
+Bu fonksiyonlar veri yapısını oluşturur, tahsis eder . onun elemanlarına çeşitli ilkdeğerleri verirler ve handle ile geri dönerler.
+
+handle ----> handle alani 
+
+	2) Handle sistemini kullanan fonnksiyonlar : Bunlar handle değerini bizden alıp veri yapısına erişerek oradaki bilgileri kullanarak faydalı işlem yaparlar.
+	3) Handle sistemini kapatan fonksiyonlar : Bunlar handle alanını boşaltıp birtakım son işlemleri yaparlar. Windows sistemlerinde genellikle bu fonksiyonlar
+CloseXXX ya da DestroyXXX biçiminde isimlendirilmektedir.
+
+Örneğin fopen handle sistemini açan bir fonksiyondur. Bize handle değerini FILE* biçiminde verir. fgetch, fread gibi fonksiyonlar handle sistemini kullanan 
+fonksiyonlardır. fclose da handle sistemini kapatan Fonksyiondur Ya da örneğin FindFirstFile handle alanını yaratır , bize o alanın adresini void* olarak verir.
+FindNextFile handle sistemini kullanan bir fonksiyondur. FindClose ise handle sistemini kapatan fonksiyondur. 
+
+
+
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef int DATATYPE;
+
+
+typedef struct tagMATRIX{
+
+	size_t rowsize;
+	size_t colsize;
+	DATATYPE *pMatrix;
+
+} MATRIX, *HMATRIX;
+
+HMATRIX CreateMatrix(size_t rowsize, size_t colsize);
+void SetMatrix(HMATRIX hMatrix);
+void CloseMatrix(HMATRIX hMatrix);
+DATATYPE GetElem(HMATRIX hMatrix, size_t rowsize , size_t col);
+void PutElem(HMATRIX hMatrix, size_t row, size_t col, DATATYPE val );
+void DispMATRIX(HMATRIX hMatrix);
+
+HMATRIX CreateMatrix(size_t rowsize , size_t colsize){
+	HMATRIX hMatrix;
+	if((hMatrix = (HMATRIX) malloc(sizeof(MATRIX))) == NULL)
+		return NULL;
+
+	hMatrix->rowsize = rowsize;
+	hMatrix->colsize = colsize;
+
+	if((hMatrix->pMatrix = (DATATYPE *)malloc(rowsize*colsize*sizeof(DATATYPE))) == NULL){
+		free(hMatrix);
+
+		return NULL;
+
+	}
+
+	return hMatrix;
+}
+
+
+Handle sistemleri nesne yönelimli programlama tekniğinideki sınıflara oldukça benzemektedir. Başka bir deyişle biz nesne yönelimli teknikte bir handle sistemini bir sınıf olarak 
+tasarlayabilriz. Şöyleki Handle alanı sınıfın private veri elemanları olarak bildirilir. Sınıfın üye fonksiyonları bunları ortak kullanmaktadır.
+
+
+
+
+Özyinelemeli Algoritmalar ve fonksiyonlar
+
+Özyinelemeli bir olgunun kendisini ya da kendisine benzeyen bir olguyu içermesi durumudur. Özyineleme olgusu hem doğada rastladığımız bir olgudur hem de bilgisayar
+bilimlerinde sıklıkla karşılaştığımız bir olgudur. Örneğin bir dizin içerisinde dosyalar ve başka dizinler bulunur. Dizin içerisindeki dizine geçtiğimizde oradada 
+benzer yapı karşımıza çıkar . O halde dizin yapısı özyineleme içermektedir.
 
 
 
 
 
 
+Tipik özyinelemeli algortimalardan bazıları şuanlardır: 
+-Dizi ağacının dolaşılması
+-İkili ağaç gibi algortimik ağaçların dolaşılması
+-grafların dolaşılması ve graflarda arama
+-Parserlar
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+Özyinelemeli fonksiyonlar
 
 
 
