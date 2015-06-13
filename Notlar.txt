@@ -17,7 +17,7 @@ Test Ýþlemleri
 Gui Programlama modulu altyapýsý
 Koruma Mekanizasý
 Bellek Yönetimi
-Thread'ler
+Threadler
 
 
 GCC gnuCCompiler
@@ -162,12 +162,117 @@ int main(void){
 Dosyayı kapatmadan rename edemeyiz.
 
 
+//////////////////////13.06.2015
+#include <dirent.h>
+struct dirent *readdir(DIR *dirp);
+
+Fonksyion opendrir fonksiyonundan elde edilen DIR türünden adresi paramaetre olarak alır ve struct dirent türünden static ömürlü 
+bir yapı nesnesinin adresiyle
+geri döner . Dizin listesinin sonuna gelinmiş ise NULL adresiyle geri döner.
+
+Çeşitli UNIX turevi sistemler bu yapıya eklenti biçiminde eleman ekleyebilmektedir. Ancak POSIX standartlarında yapı böyle bildirilmiştir.
+Görüldüğü gibi readdir bize dosyanın isminden ve i-node numarasından başka birşey vermemektedir. i-node numarasının ne anlam ifade ettiği ileride ele
+alınacaktır. i-node numarası dosyayı betimleyene sistem genelinde tek olan (unique) bir numaradır.
+
+while((dire = readdir(dir)) != NULL)
+	printf("s\n" , dire->d_name);
+
+İşlem bitince closedir fonksiyonuyla açılan dizi kapatılır. Tabi dosyalarda olduğu gibi biz bunu kapatmamışsak process sonlandığında dizin sorunsuz olarak
+işletim sistemi tarafından kapatılmaktadır.
+
+#include <dirent.h>
+int closedir(DIR *dirp);
+
+Fonksiyon başarı durumunda sıfır başarısızlık durumunda -1 döner. Başarının kontrol edilmesine gerek yoktur.
+
+stat POSIX Fonksiyonu
+Bir dosyanın yol ifadesi biliniyorsa onun bilgilerini elde etmek için stat fonksiyonu kullanılmaktadır. Stat fonksiyonun fstat ve lstat isimli kardeşleri de 
+vardır . stat fonksiyonu UNIX türevi sistemler için çok önemli bir Fonksyiondur.
+
+man stat
+man 2 stat
+
+
+#include <sys/stat.h>
+
+int stat(const char *path, struct stat *buf);
+
+fonksiyonun birinci parametresi bilgisi elde edilecek dosyanın yol ifadesini alır. İkinci parametre dosya bilgilerinin yerleştirileceği
+struct stat türünden yapı nesnesinin adresini almaktadır.Fonksyionun geri dönüş değeri başarılı ise 0 başarısız ise -1 olur. Stat yapısı sys/stat.h içerisinde
+aşağıdaki gibi bildirilmiştir.
+
+ struct stat {
+               dev_t     st_dev;         /* ID of device containing file */
+               ino_t     st_ino;         /* inode number */
+               mode_t    st_mode;        /* protection */
+               nlink_t   st_nlink;       /* number of hard links */
+               uid_t     st_uid;         /* user ID of owner */
+               gid_t     st_gid;         /* group ID of owner */
+               dev_t     st_rdev;        /* device ID (if special file) */
+               off_t     st_size;        /* total size, in bytes */
+               blksize_t st_blksize;     /* blocksize for filesystem I/O */
+               blkcnt_t  st_blocks;      /* number of 512B blocks allocated */
+
+               /* Since Linux 2.6, the kernel supports nanosecond
+                  precision for the following timestamp fields.
+                  For the details before Linux 2.6, see NOTES. */
+
+               struct timespec st_atim;  /* time of last access */
+               struct timespec st_mtim;  /* time of last modification */
+               struct timespec st_ctim;  /* time of last status change */
+
+           #define st_atime st_atim.tv_sec      /* Backward compatibility */
+           #define st_mtime st_mtim.tv_sec
+           #define st_ctime st_ctim.tv_sec
+           };
+
+
+
+Yapinin elemanlari onemli bilgiler vermktedir. Ancak bu elemanlar kursun bu noktasinda incelenmeyecektir. Fakat yapının st_size elemani dosyanin
+uzunlugunu , st_atime, st_mtime, ve st_ctime elemanlari dosyanin erisim zamanlarini bize verir. off_t isaretli bir tamsayi turundendir.time_t ise
+01/01/1970 tarihinden gecen saniye sayisini belirten aritmetik bir turdur.
 
 
 
 
 
+#include <stdio.h>
+#include <stdlib.h>
+#include <sys/stat.h>
 
+
+
+
+
+int main(void){
+
+	struct stat info;
+
+	if(stat("/usr/include/stdio.h", &finfo) < 0 ){
+
+		perror("stat");
+		exit(EXIT_FAILURE);
+
+	}
+
+	printf("%ld\n" , finfo.st_size);
+	printf("%s\n", ctime(&finfo.st_mtime) );
+
+	return 0;
+}
+
+
+
+ctime() yazı olarak statik bir char dizisine aldığı veriyi yazı olarak koyup geri döndürüyor.
+
+
+fonksiyonlar icin hata kontrolleri
+Hata kontrolü bakımından fonksiyonları X gruba ayırabiliriz;
+1)Hata kontrolunun yapılması gereken gonksyionlar : Bunlar sistemin o anki durumuyla ilgili biçimde başarısız olabilecek fonksiyonlardır . Bu tür 
+fonksiyonlar çağrılırken kesinlikle hata kontrolü yapılmalıdır. Öreneğin fopen, malloc gibi fonksiyonlar.
+2)Eğer programcı herşeyi düzgün yapmışsa başarısız olma olasılığı olmayan fonksyonlar için hata kontrolü yapılmayabilir. Örneğin dosya fopen ile düzgün açılmışsa
+fclose ile kapatılmamaısının bir nedeni olmaz zaten böyle birşey olsa bile bizim yapabileceğimiz birşey de yoktur.
+Bu tür fonksiyonlarda hata kontrolü programın DEBUG versiyonunda yapılabilir.
 
 
 
