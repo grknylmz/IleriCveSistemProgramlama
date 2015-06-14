@@ -370,23 +370,228 @@ Tipik özyinelemeli algortimalardan bazıları şuanlardır:
 -Parserlar
 
 Özyinelemeli fonksiyonlar
+/////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////
+
+
+#include <stdio.h>
+
+void foo(void){
+
+	foo();
+
+}
+
+
+int main(void){
+
+	foo();
+	return 0;
+}
+
+/////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////
 
 
 
 
+#include <stdio.h>
+
+void foo(){
+
+	printf("%d\n", n);
+	if(n == 0)
+		return;
+
+	foo(n - 1);
+	printf("Cikis");
+
+}
+
+
+int main(){
+
+	foo(3);
+
+	return 0;
+}
+
+
+/////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////
+
+
+#include <stdio.h>
+
+void foo(){
+
+	
+
+}
+
+
+int main(){
+
+	return 0;
+}
+
+Bir fonksiyonun kendini çağırması ile başka bir fonksiyonu çağırması arasında aslında hiçbir farklılık yoktur. Örneğin: 
+
+/////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////
+
+
+#include <stdio.h>
+
+void bar(){
+
+	....
+	foo();
+	....
+
+}
 
 
 
+void foo(){
+	......
+	bar();
+	......
+	
+
+}
+
+
+int main(){
+
+	foo();
+	return 0;
+}
+
+/////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////
+
+Burada bar çağrıldığında bar ıın içerisinde yeni bir a stack te oluşturulacaktır. ve bar sona erdiğinde akış çağrılan yerden devam edecektir. 
+/////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////
+
+
+#include <stdio.h>
+
+long factorial(long n){
+
+	long result ;
+
+	if(n == 0)
+		return 1;
+
+	result  = n * factorial(n-1);
+	return result;
+}
+
+
+int main(){
+
+	result = factorial(4);
+	printf("%ld\n", result );
+
+	return 0;
+}
+
+/////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////
 
 
 
+2. yazının tersten yazdırılma algoritması
+Özyineleme düz olan bir şeyi ters çevirmek için sık kullanılmaktadır. Bu problemdede aslında özyinelemeye hiç gerek yoktur. 
+
+Normal  Çözüm
+
+void putsrev(const char *str){
+	int i;
+
+	for(i = 0 ; str[i] != '\0' ; ++i )
+		;
+	for(--i ; i>= 0 ; --i)
+		putchar(str[i]);
+}
+
+int main(void){
+	putsrev("ankara");
+}
 
 
+Özyinelemeli
+
+Ödev Selection sort recursive yap.
+Eigth queens algoritmasını yap.
+
+Aslında bilgisayar sitemlerinde ekrana sayı yazdırmak diye birşşey yokyut. Yalnızca ekrana karakterler yazdırılabilir. Bu durumda aslında printf gibi bir fonksiyon
+int bir sayıyı yazıdırırken printf sayıyı basamaklarına ayrıştırıp onlara karşılık gelen karakterlleri bastırmaktadır. Yani herşey putchar gibi bir fonksiyonla
+yapılır. o halde yalnızca putchar kullanılarak bir sayının yazıdırılaması sistem programlama için önemlidir. Bu işlem tipik olarak recursive olarak 
+yapılır. Bu problemin recursive olmayan çözümü recursive çözümünden daha kötüdür. 
+
+#include <stdio.h>
+
+void putnam(int n){
+	char s[16];
+	int i;
+
+	if(i = 0){
+		s[i++] = '-';
+	}
+
+	for (int i = 0; i < n; ++i)
+	{
+
+		s[i] = n %10;
+		n /= 10;
+
+	}
 
 
+}
+
+unsigned int reverseBits(unsigned int num)
+{
+    unsigned int  NO_OF_BITS = sizeof(num) * 8;
+    unsigned int reverse_num = 0, i, temp;
+ 
+    for (i = 0; i < NO_OF_BITS; i++)
+    {
+        temp = (num & (1 << i));
+        if(temp)
+            reverse_num |= (1 << ((NO_OF_BITS - 1) - i));
+    }
+  
+    return reverse_num;
+}
+ 
+/* Driver function to test above function */
+int main()
+{
+    unsigned int x = 2; 
+    printf("%u", reverseBits(x));
+    getchar();
+}
+Above program can be optimized by removing the use of variable temp. See below the modified code.
+
+unsigned int reverseBits(unsigned int num)
+{
+    unsigned int  NO_OF_BITS = sizeof(num) * 8;
+    unsigned int reverse_num = 0;
+    int i;
+    for (i = 0; i < NO_OF_BITS; i++)
+    {
+        if((num & (1 << i)))
+           reverse_num |= 1 << ((NO_OF_BITS - 1) - i);  
+   }
+    return reverse_num;
+}
 
 
-
+#include <stdio.h>
 
 
 
