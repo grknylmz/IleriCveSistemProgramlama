@@ -1,34 +1,11 @@
 #include <stdio.h>
-unsigned int reverseBits(unsigned int num)
-{
-    unsigned int  NO_OF_BITS = sizeof(num) * 8;
-    unsigned int reverse_num = 0, i, temp;
+#include <Windows.h>
 
-    for (i = 0; i < NO_OF_BITS; i++)
-    {
-        temp = (num & (1 << i));
-        if(temp)
-            reverse_num |= (1 << ((NO_OF_BITS - 1) - i));
-    }
+int main(void){
+	char cwd[1024];
 
-    return reverse_num;
+	GetCurrentDirectory(1024, cwd);
+	printf("%s\n" , cwd);
+
+	return 0;
 }
-
-/* Driver function to test above function */
-int main()
-{
-    unsigned int x = 2;
-    printf("%u", reverseBits(x));
-    getchar();
-}
-
-
-
-
-
-
-
-
-
-
-

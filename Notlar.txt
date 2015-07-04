@@ -593,6 +593,143 @@ unsigned int reverseBits(unsigned int num)
 
 #include <stdio.h>
 
+Çok boyutlu diziler ve dizi göstericileri
+
+int (*p)[6]; Dizi göstericisi
+
+Matrisler aslında dizi dizileridir. Yani dizilerden oluşmuş dizilerdir. Örneğin 
+
+a[3][2];
+
+burada her biri iki elmandan oluşan 3 elemanlı bir dizi dizisi söz konusudur.
+
+int (*p)[2];
+
+Bir dizi göstericisi * operatoruyle erişir isek o nesne belirtmez , dizinin tamamını belirtir. (Tıpkı dizi isimlerinde olduğu gibi.) 
+Burada p göstericisinin gösterdiği yerde int bir bilgi yoktur. int türden bir dizi vardır. p göstericisininn türü int[2] biçimindedir. *p bir nesne belirtmez.
+*p ifadesini Sanki bir dizi isminin kullanıyormuşuz gibi düşünebiliriz. C'de bir ' dizinin de adresi alınabilir. Dizi adresleri dizi göstericilerine atanır.
+Örneğin : int a[2];
+int *pi;
+int(*pa) = &a;
+*pa = 10 /// Geçersiz sanki a = 10 gibi
+*pa + 1 ; /// Geçerli , *pa ile belirtilen dizinin sonraki elemanın adresi elde edilir.
+**pa = 10; /// Geçerlidir. pa göstericisinin gösterdiği yerdeki dizinin ilk elemanına atanıyor.
+*p[2] = 10 ; /// geçerli 2 indeksli elemana atama.
+
+
+
+Örneğin 
+
+int a[3][2];
+
+Burada mademki bir diznin ismini işleme soktuğumuzda artık o o dizinin ilk elemanın adresi anlamına geliyor, o halde a ifadesi int[2] türünden bir dizinin 
+adresi anlamına gelir. Bu da dizi göstericisine yerleştirilebilir. 
+
+int a[3][2];
+int (*pa)[2];
+
+pa = a /// geçerli 
+
+Bir dizi göstericisini 1 arttırdığımızda içindeki adres gösterdiği dizinin uzunluğu kadar artar.
+
+int a[3][2];
+int (*pa)[2];
+
+pa = a;  // Burada pa dizi dizisinin 0'ıncı indeksli dizisini göstermektedir //
+++pa;	// burada dizi dizisinin 1'inci indeksli dizisini göstermektedir. //
+
+
+val = pa[1][1] // eşdeğeri (*(pa+2))[1] // 5 Değeri
+
+pi = pa[1];
+val = pi[2];
+
+
+Current Working Directory 
+
+Process'in' çalışma dizini
+
+
+
+
+#include <stdio.h>
+#include <Windows.h>
+
+int main(void){
+	char cwd[1024];
+
+	GetCurrentDirectory(1024, cwd);
+	printf("%s\n" , cwd);
+
+	return 0;
+}
+
+
+
+Linux / UNIX
+
+man getcwd
+
+#include <unistd.h>
+
+char *getcwd(char *buf, size_t size);
+
+Fonksiyonun birinci parametresi yol ifadesinin yerleştirileceği dizinin adresini ikinci parametresi ise bunun uzunluğunu alır. Fonksiyon birinci parametreyle
+
+
+
+Unıx sistemlerde chdir posix fonksiyonu ile yapılır.
+
+
+
+İstenildiği kadar \\\\\ kullanılabilir.
+
+
+Process Çalışmaya Başladığında Çalışma Dizini Nerededir? 
+UNIX/Linux sistemlerinde prosesin 
+
+
+
+Dizin Ağacının dolaşılması
+
+Recursive bir algoritma 
+
+Fonksiyon çalışma dizininde dosyaları listeleyerek ilerler , tek parametresi vardır , içi listelenecek dizidir. Fonksiyon o dizinin içerisine geçer,
+ve dosyaları listelemeye başlar. Fonksyion o dizinin içerisine geçer ve dosyları listelemeye başlar. Bir dizin gördüğünde onu argüman yaparak fonksiyon 
+kendini çağırır.
+
+
+#include <stdio.h>
+#include <string.h>
+#include <windows.h>
+
+void Disp(const char *path);
+
+
+void WalkDir(){
+
+}
+
+int main(){
+
+
+	WalkDir("e:\\" i Disp);
+	
+
+
+
+
+
+	return 0;
+}
+
+
+
+
+
+
+
+
 
 
 
