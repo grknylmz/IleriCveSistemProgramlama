@@ -714,19 +714,26 @@ int main(){
 
 
 	WalkDir("e:\\" i Disp);
-	
-
-
-
-
 
 	return 0;
 }
 
 
 
+fxr.watson.org
 
 
+
+void sort(void *base, size_t count , size_t width , int(*cmp)(const void*, const void*)){
+
+}
+
+int main(int argc, char const *argv[])
+{
+	int a[10] = {34, 23 , 45 , 11, 78, 43, 34, 87, 33, 21};
+	sort(a , 10 , sizeof(int) , )
+	return 0;
+}
 
 
 
