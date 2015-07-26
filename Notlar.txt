@@ -737,6 +737,147 @@ int main(int argc, char const *argv[])
 
 
 
+setbuf fonksiyonunun ptototopi şöyledir:
+
+#include <stdio.h>
+
+void setbuf(FILE *stream, char *buf);
+
+Fonksiyonunun birinci parametresi tamponlama ile ilgili işlem yapılacak dosya bilgi göstericisini , ikinci parametresi yeni tamponun adresini belirtir. İkinci parametre null
+geçilirse sıfır tamponlama söz konusu olur. 
+
+#include <stdio.h>
+#include <stdlib.h>
+
+
+int main(int argc, char const *argv[])
+{
+	FILE *f;
+	char buf[BUFSIZ]
+
+	if((f = fopen("test.txt" , "r") == NULL )){
+		fprintf(stderr, "Cannot open file\n");
+		exit(EXIT_FAILURE);
+	}
+
+	setbuf(f , buf);
+
+	ch = fgetc(f);
+
+	fseek(f, 0 , SEEK_CUR);
+	fputc('x'  , f);
+
+	fclose(f);
+
+	return 0;
+}
+
+okumadan yazmaya ve yazmadan okumaya geçerken fseek veya flush etmek gerekiyor.
+
+
+setvbuf fonksiyonunun parametrik yapısı işe şöyledir: 
+
+
+#include <stdio.h>
+
+int setvbuf(FILE *fstream, char *buf , int mode, size_t size);
+
+fonksiyonun birinci parametresi tamponlama stratejisi değiştirilecek dosyanın dosya bilgi göstericisini belirtir. İkinci parametre dosyanın yeni tamponunu belirtmektedir.
+Bu parametre null geçilebilir. Bu durumda tamponun fonksiyonun kendisi tarafından tahsis edileceği anlamına gelir. 3. parametre yeni tamponlama stratejisinin modunu ne olacağını belirtir.
+Bu parametre aşağıdaki sembolik sabitlerden biri olarak girilmeilidir. 
+
+_IOFBF (tam tamponlama için )
+_IOLBF (Satır tamponlaması için)
+_IONBF(Sıfır tamponlama için)
+
+Sonunda yeni tamponun uzunluğunu belirtiyoruz.
+
+
+
+#include <stdio.h>
+#include <stdlib.h>
+
+
+int main(int argc, char const *argv[])
+{
+	FILE *f;
+	char buf[BUFSIZ]
+
+	if((f = fopen("test.txt" , "r") == NULL )){
+		fprintf(stderr, "Cannot open file\n");
+		exit(EXIT_FAILURE);
+	}
+
+	setvbuf(f, buf , _IOLBF ,  BUFSIZ)
+
+	fclose(f);
+
+	return 0;
+}
+
+
+
+fgetc mi getc mi ?
+
+Hızlı okuma yapma için getc kullanılabilir.  Aralarındaki tek fark getc'nin' bir makro olarak yazılmış olabileceğidir. Genellikle getc bir makro olarak yazılır. Böylece bir dosyadan byte 
+byte okuma yapılmak iste 
+
+
+STDERR STDIN STDOUT Nedir ? Aygıt sürücüler Nasıl kullanılır : 
+
+
+
+
+
+
+int main(int argc, char const *argv[])
+{
+	scanf("%d" , &val);
+	printf("%d\n", val );
+	return 0;
+}
+
+
+
+./sample < x.txt
+./sample > x.txt
+
+
+Birden fazla yönlendirme beraber de yapılabilir. Örneğin ; 
+
+./sample > x.txt < y.txt
+
+Burada sample programının stdout dosyası x.txr ye stdin dosyası da y.txt ye yönlendirilmektedir.
+
+Anahtar Notlar: Ide'lerde' genel olarak yönlendirme işlemi idelerin menuleri ile yapılabilmektedir. Ornegin visual studio'da' proje ayarlarında Debugging kısmında command 
+arguments seçeneğinde yönlendirme ifadelerini girebiliriz.
+
+Şüphesiz programın aynı zamanda komut satırı argümanları da girilebilir. 
+
+Burada "Ali" , "Veli" ,"Selami" programın komut satırı argümanlarıdır. Hata mesajlarını yazdırırken stderr fonksiyonu ile yazdırırsan stdout dan farklı olarak stdout herzaman
+ekrana yazı yazdırır fakat stderr ekrana yazdırmaz output a argümanları koymaz.
+
+
+
+
+Böyle bir çalışmada hem programın normal mesajalrı hem de hata mesajları ekran görünür. Fakat 
+
+./sample 2> x.txt // Burada yalnızca progrmaın normal mesajları ekranda görünür. hata mesajları x.txt dosyasına yazdırılmaktadır. Unix Linux sitemlerinde /dev/null isimli dosya bir aygıt
+sürücü dosyasıdır. Bu aygıt sürücünün write fonksiyonunun içi boştur. Böylece biz istersek aşağıdaki gibi programın hata mesajlarının kafa karıştırmasını önleyebiliriz.
+
+./sample 2> /dev/null
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
