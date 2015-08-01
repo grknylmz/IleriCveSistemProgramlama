@@ -868,6 +868,23 @@ sürücü dosyasıdır. Bu aygıt sürücünün write fonksiyonunun içi boştur
 ./sample 2> /dev/null
 
 
+Komut satırında Boru İşlemleri '|'
+
+Windows ve unix/linux komut satırında | boru işlemi anlamına gelir. | karakterinin solunda ve sağında çalıştırılabilen dosya yol ifadeleri bulunur. Örneğin:
+a|b 
+Burada a ve b birer programdır.
+
+a nın stdout unu pipe ''a
+b nin stdin ini pipe''a yönlendirilmektedir.
+
+Shell bir boru oluşturduktan sonra a ve b programlarını çalıştırır. Ancak a nin stdout dosyasını b nin stdin dosyasını boruya yönlendirir. Böylece a programının ekrana yazdıkları 
+boruya yazılırç b nin de klavyeden okuduğunu zannettiği şeyler borudan okunur. Böylece öyle bir durum oluşur ki sanli a nın ekrana yazdıklarını bklavyeden okuyormuş gibi bir durum
+oluşur. 
+
+
+
+
+
 
 
 
