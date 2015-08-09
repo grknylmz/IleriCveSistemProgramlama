@@ -881,17 +881,108 @@ Shell bir boru oluşturduktan sonra a ve b programlarını çalıştırır. Anca
 boruya yazılırç b nin de klavyeden okuduğunu zannettiği şeyler borudan okunur. Böylece öyle bir durum oluşur ki sanli a nın ekrana yazdıklarını bklavyeden okuyormuş gibi bir durum
 oluşur. 
 
+Proseslerin Yaratılması
+
+Bir prosesi yaratmak için ilketim sistemlerinde sistem fonksiyonları bulunur. Windows sistemlerinde CreateProcess isimli API fonksiyonu , Unix/Linux sistemlerinde fork fonksiyonu
+process yaratmak için kullanılmaktadir.
+Windows'ta' CreateProcess api  fonksiyonunun prototipi
+
+CreateProcess()
+
+Fonksiyonun birinci parametresi çalıştırılacak program dosyasının yol ifadesini alır. Burada yok ifadesi mutlak yada göreli olarak verilebilir. Fonksiyonun ikinci parametresi programın komut
+komur satırı argümanlarını belirtir. Komut satırı argümanları tek bir yazı olarak gonksiyona verilmektedir. Sonra C derleyicilerinin başlangıç kodları (start up code) bu yazıyı boşluklarda
+parse ederek argv dizisini oluşturmaktadır. İlk komut satırı argümanının programın yol ifadesi olması C''de zorunlu tutulmuştur. Fakat işletim sistemi genelinde böyle bir zorunluluk
+yoktur. Kolaylık olsub diye şöyle bir seçenek de sunulmuştur. Eğer birinci parametre NULL geçilirse ikinci parametredeki ilk bosluksuz kısım sanki birincci parametredeki 
+çalıştırılabilen dosyanın yol ifadesi gibi ele alınmaktadır. Dosya ismini bu yolla vermenin diperinde bir farku daha vardır. Bu yöntemde eğer dosya ismi hiç '/' karakter, içermiyorsa
+Windows onu yol ifadesi ile belirtilen yerde arar fakat başka dizine bakmaz. Yine fnoksyiyonun birinci parametresi NULL geçilmezse Windows programı başka yerde aramamaktadır.
+Burada ikinci parametrenin const olmayan bir adres olduğuna dikkat ediniz. (__in__out) Biz ikinci parametreye bir string ifadesi vermemliyiz. Çünkü CreateProcess bu adresteki bilgiyi
+saklayıp burayı tampon olarak kullanarak fonksiyon çıkışında yeniden orjinal yazıyı burada bırakır. Ama bu diziyi güncellemektedir. Halbuki string ifadeleri güncellenmez. Eğer birinciparametre
+NULL geçilirse ve ikinci parametredki dosya ismi'\' içermiyorsa Windows dosyayı sırasıyla şu dizinlerde arar:
+
+1) CreateProcess fonksiyonunu uygulayan programın program dosyaasının bulunduğu dizin
+2) CreateProcess uygulayan programın o andaki çalışma dizini 
+3) 32 Bit Windows System dizini (tipik olarak c:\)
 
 
 
 
 
+#include <Windows.h>
+
+CreateProcess(NULL, "C:\\windows\\system32\\notepad.exe");
+ 
+CreateProcess(NULL , cmdLine,  );
+
+
+
+Prosesler Arası Haberleşme (Interprocess Communication)
+
+Yukarıda açıklandığı gibi modern sistemlerde sayfa tabloları yolu ile prosesler arasında tam bir izolasyon sağlanmıştır. Her process sanki fiziksel belleğe tek başına yüklenip
+çalışıyormuş gibi bir illizyon oluşturur. Bir processden diğerine n bayt gönderip alma sürecine prosesler arası haberleşme denilmektedir. Processler arası haberelşme kabaca ikiye
+ayrılır: 
+
+
+
+-Aynı makinanın processleri arasında haberleşme
+-Ağ altında farklı makinanın prosesleri arasında haberleşme
+
+Aynı makinananın prosesleri arasındaki haberleşmelerde kullanılan tipik teknikler şunlardır:
+-Boru haberleşmesi
+-Paylaşılan bellek Alanları (Shared Memory)
+-Mesaj Kuyrukları (Message Queue)
+
+Ağ altında farklı makinaların prosesleri arasında haberleşmede bir protokol de devreye girer. Bu amaçla oluşturulmuş değişik protokoller vardır. Bugün en yaygın kullanılan protokol
+Internet'in' de kullandığı IP protok ailesidir. Kursumuzda IP protokol ailesi ile haberleşmede ele alınacaktır.
+;
+
+
+#include <stdio.h>
+#include <Windows.h>
+
+void ExitSys(LPCSTR lpszMsg, int stat)
+
+int main(int argc, char const *argv[])
+{
+	char cmdLine[] = "C:\windows\....";
+	STARTUPINFO si;
+	PROCESS_INFORMATION pi;
+
+	if(!CreateProcess(NULL, cmdLine , NULL, NULL, FALSE , 0 , NULL , NULL, &si , &pi))
+		ExitSys("CreateProcess", EXIT_FAILURE);
+
+	return 0;
+}
+
+void ExitSys(LPCSTR lpszMsg, int status){
+	DWORD dwLastError = GetLastError();
+	LPTSTR lpszErr;
+
+	if(FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM , NULL , dwLastError, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), (LPTSTR)&lpszErr, 0 , NULL)){
+		fprintf(stderr, "%s: %s" , lpszMsg, lpszErr);
+		LocalFree(lpszErr);
+	}
+	exit(status);
+}
+
+
+
+Başarısızlık durumunda 0 sıfır değerine geri döner.
+
+
+Sınıf Çalışması
+Basit bir c programı yazınız. Programı derlemek için cl.exe'yi' aşağıdaki gibi çalıştırınız.
+
+
+
+ShellExecute Fonksiyonu
+ShellExecute bir sistem fonksiyonu değildir. Zaten kendi içerisinde CreateProcess isimli gonksiyonunu çağırı. ShellExecute bir shell fonksiyonudur. Windows''un kabuğuna "Windows Explorer"
+denilmektedir. ve proses olarak "explorer.exe" programıdır.  Fkaat shell fonksiyonlarıu da 
 
 
 
 
-
-
+Fonksiyonun birinci parametresi bir gui penceresinin handle değerini alır .Fonksiyon başarısızlık durumunda bir MessageBpx çıkartabildiği için böyle parebt pencreye gereksinim 
+duymaktadır. Bu parametre NULL geçilirse masaüstü 
 
 
 
