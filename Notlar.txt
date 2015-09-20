@@ -1111,6 +1111,7 @@ dosyanın group id si onu yaratan prosesin group id si olarak alınmaktadır.
 3)Dosyanın erişim hakları dosya yaratılırken open fonksiyonunun üçüncü parametresinde verilir. 
 
 
+foldoc.org bilgisayar ile alakalı terimlerin tanımlarının olduğu sözlük . 
 
 
 
