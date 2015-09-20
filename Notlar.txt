@@ -986,6 +986,166 @@ duymaktadır. Bu parametre NULL geçilirse masaüstü
 
 
 
+Windows sistemlerinde aşağı seviyeli dosya İşlemleri
+
+Dosyanın açılması okulması yazılması.
+Dosya sistemi tamamen işletim sisteminin kontrolü altındadır. Biz hangi dilde yada hangi kütüphaneyle çalışıyor olursak olalım eninde Sonunda
+dosya işlemleri işletim sisteminin sistem fonksiyonları ile kernel moda geçerek gerçekleştirilmektedir. Windows sistemlerinde temel dosya işlemleri yapmak 
+için 5 api fonksiyonu kullanır. 
+
+CreateFile ///Yaratıyo ve olanı açıyo
+ReadFile(ReadFileEx)
+WriteFile(WriteFileEx)
+CloseHandle /// Bütün kernel nesnelerini kapatır.
+
+
+///MSND library 
+
+ReadFile , WriteFile ve SetFilePointer fonksiyonlarının daha sonra EX'li (IOCompletion port özelliği ile) daha yetenekli versiyonları oluşturulmuştur.
+
+CreateFile
+Fonksyionun birinci parametresi açılacak dosyanın yol ifadesi
+İkinci parametre açış modunu belirtir. Vu parametre en azından GENERIC_READ, GENERIC_WRITE bayraklarından yalnızca birini ya da her ikisini içermektedir.
+Diğer bayraklar için MSDN dökümanlarına başvurulabilir.
+Üçüncü parametre dosyanın paylaşım modunu belirtir. Bu parametre FILE_SHARE_READ, FILE_SHARE_WRITE ve FILE_SHARE_DELETE bayraklarıyla oluşturulur.
+Örneğin FILE_SHARE_READ bayrağı "başkası bu dosyayı açsın ama read modda açsın"
+Dördüncü parametresi kernel nesnesinin güvenlik durumunu belirtir NULL geçilebilir.
+
+
+Unix/Linux Sistemlerinde Aşağı Seviyeli Dosya İşlemleri 
+Posix fonksiyonları kullanılmaktadır. 
+
+open
+read
+write
+close
+lseek
+
+
+open fonksiyonu
+
+#include <sys/stat.h>
+#include <fcntl.h>
+
+int open(const char *pathname, int flags , ....);
+
+ikinci parametre açış modunu belirtmektedir.
+İki yada üç parametrelidir.
+O_RDONLY
+O_WRONLY
+O_RDWR
+
+
+Truncate -> budamak 
+
+
+O_CREAT : bu modda dosya yoksa yaratılır ve açılır varsa olan dosya açılır.
+O_TRUNC : Bu modda dosya açılırken varsa aynı zamanda sıfırlanamaktadır. Örneğin O_CREAT | O_TRUNC modu dosya yoksa yarat ve aç varsa sıfırla aç anlamına gelir. 
+O_APPEND: Bu modda dosyadan okuma yapılabilir. Ancak her yazma işlemi önce dosya göstericisinin dosyanın sonuna çekilmesi ile yapılmaktradir.
+Yani her wrrite işelmi sona eklemeye yol açar.
+O_EXCL : Bu modda yaratım sırasında dosya varsa open başarısız olur. Yani olmayan bir dosyayı yaratmanın garanti altına alınması için bu mod kullanılmaktadır. O_EXCL
+tek başına kullanılamaz. Mutlaka O_CREAT ile birlikte kullanılmalıdır.
+
+Fonksiyonun son parametresi yaratma riski varsa kullanılmalıdır. Yani ikinci parametrede O_CREAT belirtilmiş ise üçüncü parametre girilmelidir.
+Üçüncü parametre dosyanın erişim haklarını belirtir. Erişim hakları ls komutunda aşağıdaki gibi görüntülenmektedir:
+
+-rwxrwxrwx 
+
+Erişim hakları için toplam 9 karakter kullanılır. En sondaki karakter dosyanın türünü belirtir. '-' normal dosya (regular file anlamına gelir) 'd' dizin anlamına gelir.
+Diğer erişim hakları 3'lük gurplar halinde bulunur.
+
+tire - dosya türü
+ilk üç owener
+2. üç group
+3. üç other
+
+
+
+
+Her dosyanın user id ve group id si mevcut.
+UNIX/Linux sistemlerinde her prosesin bir "user id" ve "grup id" değeri mevcut. Bu değerler sayısaldır.
+
+
+Etc isimli dizin sisteme ilişkin çeşitli önemli data dosyaları mevcut.
+Bin altında executable binary dosyalar mevcut.
+
+Bu değerler sayısaldır ve prosesin kontrol bloğunda saklanır. Üst prosesten alt prosese fork işlemi sırasında aktarılır ve exec işlemi sırasında
+değişmez . Bu id değerleri login programı tarafından password başarılı girilmişse /etc/passwd ve /etc/group dosyalarına bakılarak set edilir.
+Ayrıca sistem "user id" leri "user name" lerle groupileri group name lerle ilişkilendirmiştir. Bu ilişkilendirme yine /etc/passwd ve /etc/groupu dosyalarında belirtilmektedir.
+Böylece konuşurken yada görüntülerken user id ler yerine user name ler gorup id ler  yerine group name ler oluşturulmuştur. 
+
+ls -l
+
+erişim hakkı : rw-r--r--
+user
+group 
+other
+
+
+Erişim hakları open fonksiyonu tarafından kontrol edilmektedir. Ve algoritması şöyledir mmaddleri else if olarak değerlendiririz. 
+
+1- Önce open kendisini çağıran prosesin user id si 0 mı diye bakar ç Sıfır numaralı user ide ye sahip prosese super user yada privileged user yada root user denilmektedir.
+2- open fonksiyonu edosyaya erişmek isteyen prosesin user id si dosyanın user id si ile aynı mı diye bakar. 
+3- open fonksiyonu dosyaya erişmek isteyen prosesin group id'si dosyanın group id si ile aynı mı diye bakar. Eğer böyle ise ikinci üçlük group hakkını dikkate alır.
+Bu durumda open other erişim hakını dikkate alır. 
+Örneğin aşağıdaki haklara sahip "x.txt" dosyasını open ile açmaya çalışalım 
+
+
+-rw- r-- r--
+if((fd = open("x.txt", O_RDWR)) < 0){
+  perror("open");
+  exit(EXIT_FAILURE);
+}
+
+
+
+Peki bir dosyanın user id'sini' group idsinin ve erişim haklarının nasıl olacağına kim nasıl karar vermektedir?
+İşte aslında bunları dosyayı open fonksitonuyla yaratan proses karar vermektedir. Şöyleki 
+1)Yeni yaratılan dosyanın user id si herzaman onu yaratan prosesin user id si olarak alınır. 
+2)Yeni yaratılan dosyanın group id si POSIX standartlarında iki seçenekten biri olarak verilebilir.
+-Dosyayı yaratan prosesin group id si olarak 
+-Dosyanın içinde bulunduğu dizinin group idsi olarak
+
+Maalesef bu durum POSIX standartları oluşturulduğu sırada izlenen iki farklı stratejiden kaynaklanmaktadır. Linux da default olarak yeni yaratılan 
+dosyanın group id si onu yaratan prosesin group id si olarak alınmaktadır. 
+3)Dosyanın erişim hakları dosya yaratılırken open fonksiyonunun üçüncü parametresinde verilir. 
+
+
+
+
+
+
+
+Bellek Tabanlı Dosyalar : Memory Mapped Files
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
