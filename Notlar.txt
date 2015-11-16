@@ -1120,6 +1120,46 @@ foldoc.org bilgisayar ile alakalı terimlerin tanımlarının olduğu sözlük .
 Bellek Tabanlı Dosyalar : Memory Mapped Files
 
 
+Linked Lists : 
+
+Tek bağlı ve Çift Bağlı Listeler 
+Bağlı listenin ilk elemanının adresi headpointer , sondaki tail pointer 
+
+Çift bağlı listede iki pointer mevcut ileriyi ve geriyi gösteren olarak.
+
+Bağlı liste neden kullanılır ? 
+
+Ara eleman ekleme ihtiyacı olduğunda bağlı liste kullanılabilir.
+Ama diğer şartlarda kullanılması mantıklı değil.
+Düğümde yer belli ise bu olaylar fazla ise o(n) karmaşıklığında halledilir. Eleman eklemenin ve silmenin yoğun yapıldığı , fakat erişimin az yapıldığı durumlarda 
+kullanılır.
+
+
+struct NODE{
+  DATATYPE val;
+  struct NODE *pNext;
+}
+
+
+Eğer bağlı listelerde sonraki eleman da aynı zamanda önceki elemanı gösteriyorsa bu tür bağlı listelere çift bağlı listeler (doubly linked lists ) denilmektedir. Eğer yalnızca
+önceki eleman sonraki elemanı gösteriyorsa böyle listelere tek bağlı listeler denilmektedir. Çift bağlı listelerin bir düğümü de aşağıdaki gibi bir yapıyla temsil edilebilir.
+
+
+struct  NODE
+{
+  DATATYPE val;
+  struct NODE *pPrev;
+  struct NODE *pNext;
+};
+
+
+Bağlı listelerde belirli bir indeksdeki elemanı erişmek doğrusal karmaşıklıktadır. Çünkü bir döngü gerekir. Fakat bağlı listelerde bir düğümün yerini biliyorsak oraya
+eleman insert etmek ve oradan eleman silmek sabit karmaşıklıktadır.
+Bağlı listelerin başına ve sonuna eleman eklemek ise yine sabit karmaşıklıktadır. Yani çok hızlı yapılabilmektedir.
+
+
+Bağlı listelere neden gereksinim duyulmaktadır ? 
+1) 
 
 
 
